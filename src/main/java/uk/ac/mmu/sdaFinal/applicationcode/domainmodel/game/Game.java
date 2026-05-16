@@ -1,0 +1,134 @@
+package uk.ac.mmu.sdaFinal.applicationcode.domainmodel.game;
+
+import uk.ac.mmu.sdaFinal.applicationcode.domainmodel.board.Board;
+import uk.ac.mmu.sdaFinal.applicationcode.domainmodel.dice.DiceRoll;
+import uk.ac.mmu.sdaFinal.applicationcode.domainmodel.dice.DiceShaker;
+import uk.ac.mmu.sdaFinal.applicationcode.domainmodel.events.PlayerWonEvent;
+import uk.ac.mmu.sdaFinal.applicationcode.domainmodel.events.TurnCompletedEvent;
+import uk.ac.mmu.sdaFinal.applicationcode.domainmodel.movement.MovementResult;
+import uk.ac.mmu.sdaFinal.applicationcode.domainmodel.movement.MovementType;
+import uk.ac.mmu.sdaFinal.applicationcode.domainmodel.observer.GameObserver;
+import uk.ac.mmu.sdaFinal.applicationcode.domainmodel.player.Player;
+import uk.ac.mmu.sdaFinal.applicationcode.domainmodel.player.PlayerSelector;
+import uk.ac.mmu.sdaFinal.applicationcode.domainmodel.position.Position;
+import uk.ac.mmu.sdaFinal.applicationcode.domainmodel.rules.*;
+import uk.ac.mmu.sdaFinal.applicationcode.domainmodel.turn.TurnResult;
+import uk.ac.mmu.sdaFinal.applicationcode.domainmodel.turn.TurnTracker;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.Consumer;
+
+public class Game {
+
+  private final Board board;
+  private final DiceShaker dice;
+  private final TurnTracker turnTracker = new TurnTracker();
+  private final PlayerSelector turnSelector;
+  private final MovementType movementType;
+  private final WinCondition winCondition;
+  private final List<Player> players;
+  private final HitRule hitRule;
+  private final TeleportRule teleportRule;
+  private final GameRules rules;
+  private final List<GameObserver> observers = new ArrayList<>();
+  private final List<DiceRoll> diceHistory = new ArrayList<>();
+  private Player winner;
+
+  public Game(Board board, DiceShaker dice, PlayerSelector turnSelector, MovementType movementType,
+              WinCondition winCondition, HitRule hitRule, TeleportRule teleportRule, List<Player> players, GameRules rules) {
+
+    this.board = board;
+    this.dice = dice;
+    this.turnSelector = turnSelector;
+    this.movementType = movementType;
+    this.winCondition = winCondition;
+    this.hitRule = hitRule;
+    this.teleportRule = teleportRule;
+    this.players = players;
+    this.rules = rules;
+  }
+
+  public TurnResult playTurn() {
+
+    Player current = turnSelector.next();
+
+    turnTracker.recordTurn(current);
+
+    DiceRoll roll = dice.shake();
+    diceHistory.add(roll);
+
+    TurnResult result = processMove(current, roll, turnTracker.getPlayerTurns(current));
+
+    notifyObservers(observer -> observer.onEvent(new TurnCompletedEvent(result)));
+
+    if (result.hasWon()) {
+
+      winner = current;
+      notifyObservers(observer ->
+        observer.onEvent(
+          new PlayerWonEvent(
+            current,
+            turnTracker.getPlayerTurns(current),
+            turnTracker.getTotalTurns(),
+            diceHistory
+          )
+        )
+      );
+    }
+    return result;
+  }
+
+  private TurnResult processMove(Player current, DiceRoll roll, int turnNumber) {
+    Position oldPosition = current.getPosition();
+
+    MovementResult result = movementType.move(current.getPosition(), roll, current, this.board);
+    Position afterMove = board.applyBounds(result.getPosition());
+
+    TeleportResult teleportResult = teleportRule.apply(afterMove, board);
+    Position afterTeleport = teleportResult.getPosition();
+
+    HitResult hitResult = hitRule.apply(current, afterTeleport, players);
+
+    if (hitResult.isHit()) {
+      current.setPosition(oldPosition);
+    }
+    else {
+      current.setPosition(afterTeleport);
+    }
+
+    boolean won = winCondition.hasWon(current, board);
+
+    return new TurnResult(
+      current,
+      turnNumber,
+      roll,
+      oldPosition,
+      afterMove,
+      current.getPosition(),
+      result.isBounced(),
+      teleportResult.isTeleported(),
+      teleportResult.getFrom(),
+      teleportResult.getTo(),
+      hitResult.isHit(),
+      hitResult.getHitPlayer(),
+      won
+    );
+  }
+
+  public boolean hasWinner() {
+    return winner != null;
+  }
+
+  public void addObserver(GameObserver observer) {
+    observers.add(observer);
+  }
+
+  public void removeObserver(GameObserver observer) {
+    observers.remove(observer);
+  }
+
+  private void notifyObservers(Consumer<GameObserver> action) {
+    observers.forEach(action);
+  }
+}
