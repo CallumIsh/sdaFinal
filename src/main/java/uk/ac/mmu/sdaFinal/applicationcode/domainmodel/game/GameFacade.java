@@ -1,7 +1,7 @@
 package uk.ac.mmu.sdaFinal.applicationcode.domainmodel.game;
 
-import uk.ac.mmu.sdaFinal.applicationcode.domainmodel.*;
 import uk.ac.mmu.sdaFinal.applicationcode.usecase.PlayGame;
+import uk.ac.mmu.sdaFinal.infrastructure.configuration.*;
 import uk.ac.mmu.sdaFinal.infrastructure.driving.OutputGameObserver;
 
 public class GameFacade {

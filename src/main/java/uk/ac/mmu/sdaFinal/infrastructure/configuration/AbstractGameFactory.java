@@ -1,4 +1,4 @@
-package uk.ac.mmu.sdaFinal.applicationcode.domainmodel;
+package uk.ac.mmu.sdaFinal.infrastructure.configuration;
 
 import uk.ac.mmu.sdaFinal.applicationcode.domainmodel.board.BasicBoard;
 import uk.ac.mmu.sdaFinal.applicationcode.domainmodel.board.Board;
@@ -9,7 +9,6 @@ import uk.ac.mmu.sdaFinal.applicationcode.domainmodel.game.GameRules;
 import uk.ac.mmu.sdaFinal.applicationcode.domainmodel.movement.BasicMovement;
 import uk.ac.mmu.sdaFinal.applicationcode.domainmodel.movement.ExactEndMovement;
 import uk.ac.mmu.sdaFinal.applicationcode.domainmodel.movement.MovementType;
-import uk.ac.mmu.sdaFinal.applicationcode.domainmodel.path.PathFactory;
 import uk.ac.mmu.sdaFinal.applicationcode.domainmodel.path.PathRoute;
 import uk.ac.mmu.sdaFinal.applicationcode.domainmodel.player.*;
 import uk.ac.mmu.sdaFinal.applicationcode.domainmodel.rules.*;

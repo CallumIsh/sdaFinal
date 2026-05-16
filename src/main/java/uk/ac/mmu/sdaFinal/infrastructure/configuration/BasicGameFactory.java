@@ -1,4 +1,4 @@
-package uk.ac.mmu.sdaFinal.applicationcode.domainmodel;
+package uk.ac.mmu.sdaFinal.infrastructure.configuration;
 
 import uk.ac.mmu.sdaFinal.applicationcode.domainmodel.dice.RandomSingleDice;
 import uk.ac.mmu.sdaFinal.applicationcode.domainmodel.game.Game;

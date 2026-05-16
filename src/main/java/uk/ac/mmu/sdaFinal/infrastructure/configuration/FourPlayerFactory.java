@@ -1,6 +1,7 @@
-package uk.ac.mmu.sdaFinal.applicationcode.domainmodel.player;
+package uk.ac.mmu.sdaFinal.infrastructure.configuration;
 
-import uk.ac.mmu.sdaFinal.applicationcode.domainmodel.path.PathFactory;
+import uk.ac.mmu.sdaFinal.applicationcode.domainmodel.player.Player;
+import uk.ac.mmu.sdaFinal.applicationcode.domainmodel.player.PlayerColour;
 
 import java.util.List;
 

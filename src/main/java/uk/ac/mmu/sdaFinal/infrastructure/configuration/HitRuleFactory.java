@@ -1,6 +1,5 @@
-package uk.ac.mmu.sdaFinal.applicationcode.domainmodel;
+package uk.ac.mmu.sdaFinal.infrastructure.configuration;
 
-import uk.ac.mmu.sdaFinal.applicationcode.domainmodel.board.Wormhole;
 import uk.ac.mmu.sdaFinal.applicationcode.domainmodel.dice.DiceRoll;
 import uk.ac.mmu.sdaFinal.applicationcode.domainmodel.dice.DiceShaker;
 import uk.ac.mmu.sdaFinal.applicationcode.domainmodel.dice.FixedDice;
@@ -11,7 +10,7 @@ import uk.ac.mmu.sdaFinal.applicationcode.domainmodel.position.Position;
 
 import java.util.List;
 
-public class WormholeFactory extends AbstractGameFactory {
+public class HitRuleFactory extends AbstractGameFactory {
   @Override
   public Game createGame() {
 
@@ -19,20 +18,18 @@ public class WormholeFactory extends AbstractGameFactory {
       "Small",
       2,
       false,
-      false,
-      true
+      true,
+      false
     );
 
-    DiceShaker dice = new FixedDice(List.of(new DiceRoll(6), new DiceRoll(1), new DiceRoll(1), new DiceRoll(1), new DiceRoll(6), new DiceRoll(1), new DiceRoll(6), new DiceRoll(1), new DiceRoll(6)));
-
-    List<Wormhole> wormholes = List.of(new Wormhole(new Position(8), new Position(11)));
+    DiceShaker dice = new FixedDice(List.of(new DiceRoll(6), new DiceRoll(6), new DiceRoll(6), new DiceRoll(6), new DiceRoll(5), new DiceRoll(1), new DiceRoll(6), new DiceRoll(1), new DiceRoll(6), new DiceRoll(5), new DiceRoll(3)));
 
     return buildGame(
       rules,
       dice,
       new SmallPathRoute(),
       Position.TWENTY_FIVE.getValue(),
-      wormholes
+      null
     );
   }
 }

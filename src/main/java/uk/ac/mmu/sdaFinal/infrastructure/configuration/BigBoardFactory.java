@@ -1,4 +1,4 @@
-package uk.ac.mmu.sdaFinal.applicationcode.domainmodel;
+package uk.ac.mmu.sdaFinal.infrastructure.configuration;
 
 import uk.ac.mmu.sdaFinal.applicationcode.domainmodel.dice.DiceRoll;
 import uk.ac.mmu.sdaFinal.applicationcode.domainmodel.dice.DiceShaker;
