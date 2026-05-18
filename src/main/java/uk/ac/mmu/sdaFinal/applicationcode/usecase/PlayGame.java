@@ -1,18 +1,25 @@
 package uk.ac.mmu.sdaFinal.applicationcode.usecase;
 
 import uk.ac.mmu.sdaFinal.applicationcode.domainmodel.game.Game;
+import uk.ac.mmu.sdaFinal.infrastructure.configuration.GameDefinition;
+import uk.ac.mmu.sdaFinal.infrastructure.driving.OutputGameObserver;
 
-public class PlayGame {
+public class PlayGame implements Provided {
 
-  private final Game game;
+  private final GameDefinition definition;
+  private final Required required;
 
-  public PlayGame(Game game) {
-    this.game = game;
+  public PlayGame(Required required, GameDefinition definition) {
+    this.required = required;
+    this.definition = definition;
   }
 
   public void playGame() {
+    Game game = required.loadGame(definition);
 
-    //notifyGameStarted();
+    game.addObserver(new OutputGameObserver());
+
+    game.gameStarted();
 
     while (!game.hasWinner()) {
       game.playTurn();

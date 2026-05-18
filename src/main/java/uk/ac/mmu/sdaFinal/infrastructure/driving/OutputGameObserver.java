@@ -5,11 +5,11 @@ import uk.ac.mmu.sdaFinal.applicationcode.domainmodel.dice.DiceRoll;
 import uk.ac.mmu.sdaFinal.applicationcode.domainmodel.events.GameStartedEvent;
 import uk.ac.mmu.sdaFinal.applicationcode.domainmodel.events.PlayerWonEvent;
 import uk.ac.mmu.sdaFinal.applicationcode.domainmodel.events.TurnCompletedEvent;
-import uk.ac.mmu.sdaFinal.applicationcode.domainmodel.game.GameRules;
 import uk.ac.mmu.sdaFinal.applicationcode.domainmodel.observer.GameObserver;
 import uk.ac.mmu.sdaFinal.applicationcode.domainmodel.player.Player;
 import uk.ac.mmu.sdaFinal.applicationcode.domainmodel.position.Position;
 import uk.ac.mmu.sdaFinal.applicationcode.domainmodel.turn.TurnResult;
+import uk.ac.mmu.sdaFinal.infrastructure.configuration.GameRulesConfig;
 
 import java.util.stream.Collectors;
 
@@ -85,15 +85,17 @@ public class OutputGameObserver implements GameObserver {
   @Override
   public void onEvent(GameStartedEvent event) {
 
-    GameRules rules = event.getRules();
+    GameRulesConfig rules = event.getRules();
     Board board = event.getBoard();
+
+    String boardType = rules.getPlayerCount() == 2 ? "Small" : "Large";
 
     String wormholes = board.getWormholes().isEmpty() ? "None"
     : board.getWormholes().stream()
     .map(w -> w.getA() + " and " + w.getB()).collect(Collectors.joining(", "));
 
     System.out.println(
-      "Board: " + rules.getBoardType() +
+      "Board: " + boardType +
         ", Players: " + rules.getPlayerCount() +
         ", Exact End: " + (rules.isExactEnd()
         ? "Player must land exactly on the END position to win else the player bounces back"

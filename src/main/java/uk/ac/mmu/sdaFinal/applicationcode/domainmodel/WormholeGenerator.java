@@ -6,6 +6,9 @@ import uk.ac.mmu.sdaFinal.applicationcode.domainmodel.position.Position;
 import java.util.*;
 
 public class WormholeGenerator {
+
+  private final WormholeValidator validator = new WormholeValidator();
+
   public List<Wormhole> generate(int boardSize, Set<Integer> invalidPositions) {
     Random random = new Random();
     List<Wormhole> wormholes = new ArrayList<>();
@@ -23,19 +26,10 @@ public class WormholeGenerator {
       int offset = random.nextInt(4) + 2;
       int end = start + (random.nextBoolean() ? offset : -offset);
 
-      boolean valid =
-        end >= min && end <= max && start != end
-        && !usedPositions.contains(start) &&
-        !usedPositions.contains(end) &&
-        !invalidPositions.contains(start) &&
-        !invalidPositions.contains(end);
+      Wormhole candidate = new Wormhole(new Position(start), new Position(end));
 
-      if (valid) {
-        wormholes.add(new Wormhole(
-          new Position(start), new Position(end)
-
-
-        ));
+      if (validator.isValid(candidate, invalidPositions, usedPositions, boardSize)) {
+        wormholes.add(candidate);
         usedPositions.add(start);
         usedPositions.add(end);
       }

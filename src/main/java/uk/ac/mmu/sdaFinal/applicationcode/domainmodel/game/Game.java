@@ -3,6 +3,7 @@ package uk.ac.mmu.sdaFinal.applicationcode.domainmodel.game;
 import uk.ac.mmu.sdaFinal.applicationcode.domainmodel.board.Board;
 import uk.ac.mmu.sdaFinal.applicationcode.domainmodel.dice.DiceRoll;
 import uk.ac.mmu.sdaFinal.applicationcode.domainmodel.dice.DiceShaker;
+import uk.ac.mmu.sdaFinal.applicationcode.domainmodel.events.GameStartedEvent;
 import uk.ac.mmu.sdaFinal.applicationcode.domainmodel.events.PlayerWonEvent;
 import uk.ac.mmu.sdaFinal.applicationcode.domainmodel.events.TurnCompletedEvent;
 import uk.ac.mmu.sdaFinal.applicationcode.domainmodel.movement.MovementResult;
@@ -14,6 +15,7 @@ import uk.ac.mmu.sdaFinal.applicationcode.domainmodel.position.Position;
 import uk.ac.mmu.sdaFinal.applicationcode.domainmodel.rules.*;
 import uk.ac.mmu.sdaFinal.applicationcode.domainmodel.turn.TurnResult;
 import uk.ac.mmu.sdaFinal.applicationcode.domainmodel.turn.TurnTracker;
+import uk.ac.mmu.sdaFinal.infrastructure.configuration.GameRulesConfig;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,13 +32,13 @@ public class Game {
   private final List<Player> players;
   private final HitRule hitRule;
   private final TeleportRule teleportRule;
-  private final GameRules rules;
+  private final GameRulesConfig rules;
   private final List<GameObserver> observers = new ArrayList<>();
   private final List<DiceRoll> diceHistory = new ArrayList<>();
   private Player winner;
 
   public Game(Board board, DiceShaker dice, PlayerSelector turnSelector, MovementType movementType,
-              WinCondition winCondition, HitRule hitRule, TeleportRule teleportRule, List<Player> players, GameRules rules) {
+              WinCondition winCondition, HitRule hitRule, TeleportRule teleportRule, List<Player> players, GameRulesConfig rules) {
 
     this.board = board;
     this.dice = dice;
@@ -114,6 +116,11 @@ public class Game {
       hitResult.getHitPlayer(),
       won
     );
+  }
+
+  public void gameStarted() {
+    notifyObservers(observer ->
+      observer.onEvent(new GameStartedEvent(rules, board, players)));
   }
 
   public boolean hasWinner() {
