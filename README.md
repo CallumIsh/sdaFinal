@@ -23,7 +23,7 @@ All variations are displayed using the games currently set up in Beans, with som
 
 The first advanced feature attempted was the save and replay game feature. This was done using a replay game usecase that reads a game from a supplied repository type, and then runs the game through the game code. The games can be saved in two ways, either using an in memory store that resets at runtime, or as JSON in a file. JSON files are also deleted at runtime, but this feature could easily be removed in the future without touching game code. To choose which save type to use, comment one line in the gameRepository bean in GameConfig, and the other will be used. Only one save type currently works at a time currently. JSON files were made using Jackson, and in memory storage uses a map. 
 
-The other advanced feature attempted was a State Machine. This advanced feature was very heavily based on the example in Lab 7, but was ammended for the game, and controls the game phases. A diagram below shows how the state machine works for our game: 
+The other advanced feature attempted was a State Machine. This advanced feature was very heavily based on the example in Lab 7, but was amended for the game, and controls the game phases. A diagram below shows how the state machine works for our game: 
 
 ```mermaid
 stateDiagram-v2
@@ -40,7 +40,107 @@ GAME_OVER --> [*]
 
 ```
 
-READY state is used while the game set up is being displayed, and moves to IN PLAY before the first turn takes place. For every turn taken the game remains in IN PLAY, until a player wins and then end_game() is called and GAME OVER state displays. Any additional rolls added in a fixed dice do nothing after this. The machine operates per game instance, although this can be changed in the future using the reset function. 
+READY state is used while the game set up is being displayed, and moves to IN PLAY before the first turn takes place. For every turn taken the game remains in IN PLAY, until a player wins and then end_game() is called and GAME OVER state displays. Any additional rolls added in a fixed dice do nothing after this. The machine operates per game instance, and a new context is made for each game. 
 
 ## Solid Principles
 
+The implementation of the game adheres to the SOLID principles throughout the domain code and use cases.
+
+### Single Responsibility Principle:
+
+Most classes throughout the project adhere to SRP and have a single, defined responsibility. An example of this is the game code, which coordinates game flow, while rules and results are handled by other classes. 
+
+### Open/Closed Principle:
+
+The system is designed to be open for extension but closed for modification. New behaviours can be introduced by adding implementations of interfaces such as HitRule, WinCondition and TeleportRule, without modifying the core game class. 
+
+### Liskov Substitution Principle 
+
+All implementations of interfaces can be substituted without affecting correctness of the system. For example, replacing BasicMovement with ExactEndMovement does not require changes to the Game class.
+
+### Interface Segregation Principle
+
+The system aims to use small interfaces rather than more general ones. For example, rule interfaces such as HitRule and TeleportRule are kept specific to their use. 
+
+### Dependency Inversion Principle
+
+Game depends on abstractions rather than concrete implementations, infrastructure components also depend on domain abstractions rather than concrete implementations. 
+
+## Design Patterns Used
+
+The first pattern implemented was the Strategy Pattern, supporting changeable game rules and behaviours. This is used for several components including exact end, hit rule, movement and teleport rule. This was used to allow for multiple implementations of an interface, and helped allow for easier game configuration. 
+
+Another pattern used in the project was the Observer Pattern, used for outputting game events to the console. This is used in OutputGameObserver, as well as in the observer and event packages. This separates presentation logic from the core game logic while still allowing the game to publish events.
+
+State pattern was used to implement a State Machine for game flow. Related classes are located in the gameState package within the domain layer. This removes the need for conditional logic which was being used until the state machine was implemented.
+
+The decorator pattern was used to enable a double dice. This allows us to extend our dice without having to change the core dice logic. 
+
+A facade was implemented in the game code but then later removed as it was redundant once the game was added into springboot. Game Factories were also removed for the same reason, although a factory does still exist for adding players to a game. 
+
+## Architecture 
+
+The system follows a clean architecture approach, separating the application into domain, use cases and infrastructure. 
+
+The domain layer contains the core game code including the game class, rule implementations, state machine and event system. The layer is independent of infrastructure and handles game logic. 
+
+The use case layer coordinates execution of the game and replay, and handles interactions between the domain and infrastructure. 
+
+The infrastructure provides external usage for output and persistence. This includes the repository implementations and the OutputGameObserver used for console output. 
+
+The diagram below illustrates the architecture:
+
+```mermaid
+classDiagram
+direction LR
+
+class SdaFinalApplication
+
+class GameConfig
+
+class PlayGame
+
+class ReplayGame
+
+class Game
+
+class OutputGameObserver
+
+class GameRepository {
+    <<interface>>
+}
+
+class JsonGameRepository
+
+class InMemoryGameRepository
+
+class Storage
+
+SdaFinalApplication --> GameConfig
+
+GameConfig --> PlayGame
+GameConfig --> ReplayGame
+GameConfig --> Game
+
+PlayGame --> Game
+ReplayGame --> Game
+
+PlayGame --> GameRepository
+ReplayGame --> GameRepository
+
+Game --> OutputGameObserver
+
+JsonGameRepository ..|> GameRepository
+InMemoryGameRepository ..|> GameRepository
+
+JsonGameRepository --> Storage
+InMemoryGameRepository --> Storage
+```
+
+## Reflection
+
+Overall, the implementation does a good job at demonstrating the game variations, advanced features, design patterns and architectural principles. One of the strongest aspects is the separation of concerns between domain, use cases, and infrastructure. The use of patterns such as Strategy and Observer allow for maintainability and extensibility, as new behaviours can be added without modifying existing core code. 
+
+However, the code could definitely be improved further by allowing for the user to dynamically choose rules through a command line at runtime. The same thing can be said of the type of game store too, and this was attempted but scrapped due to time constraints and risk of creating bugs. It also would have been nice to add the ability to save to both at the same time, and this was also attempted and then scrapped.
+
+Overall the project provided valuable experience and displays a good level of functionality and usage of design patterns, but could have been implemented better to provide more interaction. 
