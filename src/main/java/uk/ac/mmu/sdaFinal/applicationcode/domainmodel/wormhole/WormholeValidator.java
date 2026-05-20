@@ -1,7 +1,5 @@
 package uk.ac.mmu.sdaFinal.applicationcode.domainmodel.wormhole;
 
-import uk.ac.mmu.sdaFinal.applicationcode.domainmodel.board.Wormhole;
-
 import java.util.Set;
 
 public class WormholeValidator {

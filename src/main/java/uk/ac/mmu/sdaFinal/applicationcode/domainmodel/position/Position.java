@@ -1,5 +1,7 @@
 package uk.ac.mmu.sdaFinal.applicationcode.domainmodel.position;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.util.Objects;
 
 public final class Position {
@@ -12,7 +14,7 @@ public final class Position {
 
   private final int value;
 
-  public Position(int value) {
+  public Position(@JsonProperty("value") int value) {
     if (value < 1) {
       throw new IllegalArgumentException("Position must be >=1");
     }

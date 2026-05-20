@@ -2,10 +2,8 @@ package uk.ac.mmu.sdaFinal.infrastructure.configuration;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import uk.ac.mmu.sdaFinal.applicationcode.domainmodel.board.Wormhole;
-import uk.ac.mmu.sdaFinal.applicationcode.domainmodel.dice.DiceShaker;
-import uk.ac.mmu.sdaFinal.applicationcode.domainmodel.dice.DiceShakerDecorator;
-import uk.ac.mmu.sdaFinal.applicationcode.domainmodel.dice.RandomSingleDice;
+import uk.ac.mmu.sdaFinal.applicationcode.domainmodel.dice.*;
+import uk.ac.mmu.sdaFinal.applicationcode.domainmodel.wormhole.Wormhole;
 import uk.ac.mmu.sdaFinal.applicationcode.domainmodel.position.Position;
 import uk.ac.mmu.sdaFinal.applicationcode.domainmodel.rules.GameRulesConfig;
 import uk.ac.mmu.sdaFinal.applicationcode.usecase.play.PlayGame;
@@ -24,12 +22,8 @@ public class GameConfig {
 
 
   @Bean
-  public GameRepository memoryRepository() {
-    return new InMemoryGameRepository();
-  }
-
-  //@Bean
-  public GameRepository jsonRepository() {
+  public GameRepository gameRepository() {
+    //return new InMemoryGameRepository();
     return new JsonGameRepository();
   }
 
@@ -66,7 +60,7 @@ public class GameConfig {
     return new PlayGame(required, definition, gameRepository());
   }
 
-  //@Bean
+  @Bean
   public Provided doubleGame(Required required) {
     GameRulesConfig rules =
       new GameRulesConfig(
@@ -89,7 +83,7 @@ public class GameConfig {
     return new PlayGame(required, definition, gameRepository());
   }
 
-  //@Bean
+  @Bean
   public Provided exactEndGame(Required required) {
     GameRulesConfig rules =
       new GameRulesConfig(
@@ -99,7 +93,18 @@ public class GameConfig {
         false
       );
 
-    DiceShaker dice = new RandomSingleDice();
+    DiceShaker dice = new FixedDice(List.of(
+      new DiceRoll(6),
+      new DiceRoll(3),
+      new DiceRoll(6),
+      new DiceRoll(3),
+      new DiceRoll(6),
+      new DiceRoll(3),
+      new DiceRoll(4),
+      new DiceRoll(3),
+      new DiceRoll(4),
+      new DiceRoll(3),
+      new DiceRoll(2)));
 
     GameDefinition definition =
       new GameDefinition(
@@ -112,7 +117,7 @@ public class GameConfig {
     return new PlayGame(required, definition, gameRepository());
   }
 
-  //@Bean
+  @Bean
   public Provided hitGame(Required required) {
     GameRulesConfig rules =
       new GameRulesConfig(
@@ -122,7 +127,18 @@ public class GameConfig {
         false
       );
 
-    DiceShaker dice = new RandomSingleDice();
+    DiceShaker dice = new FixedDice(List.of(
+      new DiceRoll(6),
+      new DiceRoll(6),
+      new DiceRoll(6),
+      new DiceRoll(6),
+      new DiceRoll(5),
+      new DiceRoll(1),
+      new DiceRoll(6),
+      new DiceRoll(1),
+      new DiceRoll(6),
+      new DiceRoll(5),
+      new DiceRoll(3)));
 
     GameDefinition definition =
       new GameDefinition(
@@ -135,7 +151,7 @@ public class GameConfig {
     return new PlayGame(required, definition, gameRepository());
   }
 
-  //@Bean
+  @Bean
   public Provided largeBoardGame(Required required){
   GameRulesConfig rules =
     new GameRulesConfig(
@@ -145,7 +161,47 @@ public class GameConfig {
       false
     );
 
-  DiceShaker dice = new RandomSingleDice();
+    DiceShaker dice = new FixedDice(
+      List.of(
+        new DiceRoll(4),
+        new DiceRoll(3),
+        new DiceRoll(5),
+        new DiceRoll(2),
+
+        new DiceRoll(6),
+        new DiceRoll(4),
+        new DiceRoll(3),
+        new DiceRoll(5),
+
+        new DiceRoll(2),
+        new DiceRoll(6),
+        new DiceRoll(4),
+        new DiceRoll(3),
+
+        new DiceRoll(5),
+        new DiceRoll(2),
+        new DiceRoll(6),
+        new DiceRoll(4),
+
+        new DiceRoll(5),
+        new DiceRoll(6),
+
+        new DiceRoll(4),
+        new DiceRoll(5),
+        new DiceRoll(3),
+        new DiceRoll(6),
+
+        new DiceRoll(2),
+        new DiceRoll(4),
+        new DiceRoll(5),
+        new DiceRoll(6),
+
+        new DiceRoll(3),
+        new DiceRoll(2),
+        new DiceRoll(6),
+        new DiceRoll(5)
+      )
+    );
 
   GameDefinition definition =
     new GameDefinition(
@@ -158,7 +214,7 @@ public class GameConfig {
     return new PlayGame(required, definition, gameRepository());
   }
 
-  //@Bean
+  @Bean
   public Provided wormholeGame(Required required) {
 
     GameRulesConfig rules =
@@ -169,11 +225,19 @@ public class GameConfig {
         true
       );
 
-    DiceShaker dice = new RandomSingleDice();
+    DiceShaker dice = new FixedDice(List.of(
+      new DiceRoll(6),
+      new DiceRoll(1),
+      new DiceRoll(1),
+      new DiceRoll(1),
+      new DiceRoll(6),
+      new DiceRoll(1),
+      new DiceRoll(6),
+      new DiceRoll(1),
+      new DiceRoll(6)));
 
     List<Wormhole> wormholes = List.of(
-      new Wormhole(new Position(3), new Position(8)),
-      new Wormhole(new Position(12), new Position(18))
+      new Wormhole(new Position(8), new Position(11))
     );
 
     GameDefinition definition =
@@ -187,7 +251,7 @@ public class GameConfig {
     return new PlayGame(required, definition, gameRepository());
   }
 
-  //@Bean
+  @Bean
   public Provided allVariationsGame(Required required) {
     GameRulesConfig rules =
       new GameRulesConfig(

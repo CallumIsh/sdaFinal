@@ -4,7 +4,7 @@ import uk.ac.mmu.sdaFinal.applicationcode.domainmodel.wormhole.WormholeGenerator
 import uk.ac.mmu.sdaFinal.applicationcode.domainmodel.wormhole.WormholeValidator;
 import uk.ac.mmu.sdaFinal.applicationcode.domainmodel.board.BasicBoard;
 import uk.ac.mmu.sdaFinal.applicationcode.domainmodel.board.Board;
-import uk.ac.mmu.sdaFinal.applicationcode.domainmodel.board.Wormhole;
+import uk.ac.mmu.sdaFinal.applicationcode.domainmodel.wormhole.Wormhole;
 import uk.ac.mmu.sdaFinal.applicationcode.domainmodel.dice.DiceShaker;
 import uk.ac.mmu.sdaFinal.applicationcode.domainmodel.game.Game;
 

@@ -1,7 +1,7 @@
 package uk.ac.mmu.sdaFinal.applicationcode.domainmodel.game;
 
 import uk.ac.mmu.sdaFinal.applicationcode.domainmodel.board.Board;
-import uk.ac.mmu.sdaFinal.applicationcode.domainmodel.board.Wormhole;
+import uk.ac.mmu.sdaFinal.applicationcode.domainmodel.wormhole.Wormhole;
 import uk.ac.mmu.sdaFinal.applicationcode.domainmodel.dice.DiceRoll;
 import uk.ac.mmu.sdaFinal.applicationcode.domainmodel.dice.DiceShaker;
 import uk.ac.mmu.sdaFinal.applicationcode.domainmodel.events.GameStartedEvent;

@@ -1,6 +1,5 @@
 package uk.ac.mmu.sdaFinal.applicationcode.domainmodel.wormhole;
 
-import uk.ac.mmu.sdaFinal.applicationcode.domainmodel.board.Wormhole;
 import uk.ac.mmu.sdaFinal.applicationcode.domainmodel.position.Position;
 
 import java.util.*;
@@ -24,7 +23,13 @@ public class WormholeGenerator {
       int start = random.nextInt(max - min + 1) + min;
 
       int offset = random.nextInt(4) + 2;
+
       int end = start + (random.nextBoolean() ? offset : -offset);
+
+
+      if (end < 1 || end > boardSize) {
+        continue;
+      }
 
       Wormhole candidate = new Wormhole(new Position(start), new Position(end));
 

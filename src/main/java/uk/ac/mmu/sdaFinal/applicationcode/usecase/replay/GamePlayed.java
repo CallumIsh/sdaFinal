@@ -1,6 +1,6 @@
 package uk.ac.mmu.sdaFinal.applicationcode.usecase.replay;
 
-import uk.ac.mmu.sdaFinal.applicationcode.domainmodel.board.Wormhole;
+import uk.ac.mmu.sdaFinal.applicationcode.domainmodel.wormhole.Wormhole;
 import uk.ac.mmu.sdaFinal.applicationcode.domainmodel.rules.GameRulesConfig;
 
 import java.util.List;
