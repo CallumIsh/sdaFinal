@@ -29,6 +29,10 @@ public class PlayGame implements Provided {
 
     while (!game.hasWinner()) {
       game.playTurn();
+
+      if (game.getTotalTurns() > 200) {
+        System.out.println("Game Terminated: too many turns.");
+      }
     }
 
     game.getContext().endGame();

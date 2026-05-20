@@ -134,6 +134,10 @@ public class Game {
       observer.onEvent(new GameStartedEvent(gameId, rules, board, players)));
   }
 
+  public int getTotalTurns() {
+    return turnTracker.getTotalTurns();
+  }
+
   public List<DiceRoll> getDiceHistory() {
     return List.copyOf(diceHistory);
   }
