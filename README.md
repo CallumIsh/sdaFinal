@@ -21,5 +21,26 @@ All variations are displayed using the games currently set up in Beans, with som
 
 ## Advanced Features
 
+The first advanced feature attempted was the save and replay game feature. This was done using a replay game usecase that reads a game from a supplied repository type, and then runs the game through the game code. The games can be saved in two ways, either using an in memory store that resets at runtime, or as JSON in a file. JSON files are also deleted at runtime, but this feature could easily be removed in the future without touching game code. To choose which save type to use, comment one line in the gameRepository bean in GameConfig, and the other will be used. Only one save type currently works at a time currently. JSON files were made using Jackson, and in memory storage uses a map. 
 
+The other advanced feature attempted was a State Machine. This advanced feature was very heavily based on the example in Lab 7, but was ammended for the game, and controls the game phases. A diagram below shows how the state machine works for our game: 
+
+```mermaid
+stateDiagram-v2
+
+[*] --> READY
+
+READY --> IN_PLAY : startGame()
+
+IN_PLAY --> IN_PLAY : nextTurn()
+
+IN_PLAY --> GAME_OVER : endGame()
+
+GAME_OVER --> [*]
+
+```
+
+READY state is used while the game set up is being displayed, and moves to IN PLAY before the first turn takes place. For every turn taken the game remains in IN PLAY, until a player wins and then end_game() is called and GAME OVER state displays. Any additional rolls added in a fixed dice do nothing after this. The machine operates per game instance, although this can be changed in the future using the reset function. 
+
+## Solid Principles
 
