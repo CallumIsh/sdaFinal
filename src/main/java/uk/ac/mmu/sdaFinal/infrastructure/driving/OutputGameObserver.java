@@ -5,15 +5,28 @@ import uk.ac.mmu.sdaFinal.applicationcode.domainmodel.dice.DiceRoll;
 import uk.ac.mmu.sdaFinal.applicationcode.domainmodel.events.GameStartedEvent;
 import uk.ac.mmu.sdaFinal.applicationcode.domainmodel.events.PlayerWonEvent;
 import uk.ac.mmu.sdaFinal.applicationcode.domainmodel.events.TurnCompletedEvent;
+import uk.ac.mmu.sdaFinal.applicationcode.domainmodel.game.Game;
 import uk.ac.mmu.sdaFinal.applicationcode.domainmodel.observer.GameObserver;
 import uk.ac.mmu.sdaFinal.applicationcode.domainmodel.player.Player;
 import uk.ac.mmu.sdaFinal.applicationcode.domainmodel.position.Position;
 import uk.ac.mmu.sdaFinal.applicationcode.domainmodel.turn.TurnResult;
-import uk.ac.mmu.sdaFinal.infrastructure.configuration.GameRulesConfig;
+import uk.ac.mmu.sdaFinal.applicationcode.domainmodel.rules.GameRulesConfig;
+import uk.ac.mmu.sdaFinal.applicationcode.usecase.replay.GamePlayed;
+import uk.ac.mmu.sdaFinal.applicationcode.usecase.replay.GameRepository;
 
 import java.util.stream.Collectors;
 
 public class OutputGameObserver implements GameObserver {
+
+  private final Game game;
+  private final GameRepository repository;
+  private final boolean saveEnabled;
+
+  public OutputGameObserver(Game game, GameRepository repository, Boolean saveEnabled) {
+    this.game = game;
+    this.repository = repository;
+    this.saveEnabled = saveEnabled;
+  }
 
   @Override
   public void onEvent(TurnCompletedEvent event) {
@@ -80,6 +93,22 @@ public class OutputGameObserver implements GameObserver {
 
     System.out.println("Total turns: " + event.getTotalTurns() + ".");
     System.out.println("Dice rolls: {" + rolls + "}");
+
+    if (saveEnabled) {
+
+      GamePlayed gamePlayed = new GamePlayed(
+        game.getGameId(),
+        game.getRules(),
+        game.getDiceHistory().stream().map(DiceRoll::getValue).toList(),
+        game.getWormholes()
+      );
+
+      repository.save(gamePlayed);
+
+      System.out.println(repository.findById(gamePlayed.getGameId()).get());
+
+      System.out.println("Game Id: " + game.getGameId() + " saved.");
+    }
   }
 
   @Override

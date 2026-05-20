@@ -1,7 +1,7 @@
 package uk.ac.mmu.sdaFinal.applicationcode.domainmodel.board;
 
 import uk.ac.mmu.sdaFinal.applicationcode.domainmodel.position.Position;
-import uk.ac.mmu.sdaFinal.applicationcode.domainmodel.WormholeGenerator;
+import uk.ac.mmu.sdaFinal.applicationcode.domainmodel.wormhole.WormholeGenerator;
 
 import java.util.List;
 import java.util.Set;

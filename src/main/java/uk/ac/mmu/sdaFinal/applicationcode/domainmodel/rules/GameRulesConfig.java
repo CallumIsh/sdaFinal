@@ -1,4 +1,6 @@
-package uk.ac.mmu.sdaFinal.infrastructure.configuration;
+package uk.ac.mmu.sdaFinal.applicationcode.domainmodel.rules;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class GameRulesConfig {
 
@@ -8,7 +10,7 @@ public class GameRulesConfig {
   private final boolean hitEnabled;
   private final boolean teleportEnabled;
 
-  public GameRulesConfig(int playerCount, boolean exactEnd, boolean hitEnabled, boolean teleportEnabled) {
+  public GameRulesConfig(@JsonProperty("playerCount") int playerCount, @JsonProperty("exactEnd") boolean exactEnd, @JsonProperty("hitEnabled") boolean hitEnabled, @JsonProperty("teleportEnabled") boolean teleportEnabled) {
 
     if (playerCount != 2 && playerCount != 4) {
       throw new IllegalArgumentException(

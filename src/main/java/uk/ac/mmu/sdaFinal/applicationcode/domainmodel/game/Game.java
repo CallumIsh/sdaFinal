@@ -1,6 +1,7 @@
 package uk.ac.mmu.sdaFinal.applicationcode.domainmodel.game;
 
 import uk.ac.mmu.sdaFinal.applicationcode.domainmodel.board.Board;
+import uk.ac.mmu.sdaFinal.applicationcode.domainmodel.board.Wormhole;
 import uk.ac.mmu.sdaFinal.applicationcode.domainmodel.dice.DiceRoll;
 import uk.ac.mmu.sdaFinal.applicationcode.domainmodel.dice.DiceShaker;
 import uk.ac.mmu.sdaFinal.applicationcode.domainmodel.events.GameStartedEvent;
@@ -15,7 +16,7 @@ import uk.ac.mmu.sdaFinal.applicationcode.domainmodel.position.Position;
 import uk.ac.mmu.sdaFinal.applicationcode.domainmodel.rules.*;
 import uk.ac.mmu.sdaFinal.applicationcode.domainmodel.turn.TurnResult;
 import uk.ac.mmu.sdaFinal.applicationcode.domainmodel.turn.TurnTracker;
-import uk.ac.mmu.sdaFinal.infrastructure.configuration.GameRulesConfig;
+import uk.ac.mmu.sdaFinal.applicationcode.domainmodel.rules.GameRulesConfig;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,6 +24,7 @@ import java.util.function.Consumer;
 
 public class Game {
 
+  private final String gameId;
   private final Board board;
   private final DiceShaker dice;
   private final TurnTracker turnTracker = new TurnTracker();
@@ -37,9 +39,10 @@ public class Game {
   private final List<DiceRoll> diceHistory = new ArrayList<>();
   private Player winner;
 
-  public Game(Board board, DiceShaker dice, PlayerSelector turnSelector, MovementType movementType,
+  public Game(String gameId, Board board, DiceShaker dice, PlayerSelector turnSelector, MovementType movementType,
               WinCondition winCondition, HitRule hitRule, TeleportRule teleportRule, List<Player> players, GameRulesConfig rules) {
 
+    this.gameId = gameId;
     this.board = board;
     this.dice = dice;
     this.turnSelector = turnSelector;
@@ -120,7 +123,23 @@ public class Game {
 
   public void gameStarted() {
     notifyObservers(observer ->
-      observer.onEvent(new GameStartedEvent(rules, board, players)));
+      observer.onEvent(new GameStartedEvent(gameId, rules, board, players)));
+  }
+
+  public List<DiceRoll> getDiceHistory() {
+    return List.copyOf(diceHistory);
+  }
+
+  public GameRulesConfig getRules() {
+    return rules;
+  }
+
+  public String getGameId() {
+    return gameId;
+  }
+
+  public List<Wormhole> getWormholes() {
+    return board.getWormholes();
   }
 
   public boolean hasWinner() {

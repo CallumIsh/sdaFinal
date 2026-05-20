@@ -7,18 +7,40 @@ import uk.ac.mmu.sdaFinal.applicationcode.domainmodel.dice.DiceShaker;
 import uk.ac.mmu.sdaFinal.applicationcode.domainmodel.dice.DiceShakerDecorator;
 import uk.ac.mmu.sdaFinal.applicationcode.domainmodel.dice.RandomSingleDice;
 import uk.ac.mmu.sdaFinal.applicationcode.domainmodel.position.Position;
-import uk.ac.mmu.sdaFinal.applicationcode.usecase.PlayGame;
+import uk.ac.mmu.sdaFinal.applicationcode.domainmodel.rules.GameRulesConfig;
+import uk.ac.mmu.sdaFinal.applicationcode.usecase.play.PlayGame;
 import uk.ac.mmu.sdaFinal.applicationcode.usecase.Provided;
 import uk.ac.mmu.sdaFinal.applicationcode.usecase.Required;
+import uk.ac.mmu.sdaFinal.applicationcode.usecase.replay.GameRepository;
+import uk.ac.mmu.sdaFinal.applicationcode.usecase.replay.ReplayGame;
+import uk.ac.mmu.sdaFinal.infrastructure.driven.GameAdapter;
+import uk.ac.mmu.sdaFinal.infrastructure.driven.InMemoryGameRepository;
+import uk.ac.mmu.sdaFinal.infrastructure.driven.JsonGameRepository;
 
 import java.util.List;
 
 @Configuration
 public class GameConfig {
 
+
+  @Bean
+  public GameRepository memoryRepository() {
+    return new InMemoryGameRepository();
+  }
+
+  //@Bean
+  public GameRepository jsonRepository() {
+    return new JsonGameRepository();
+  }
+
   @Bean
   public Required gameAdapter() {
     return new GameAdapter();
+  }
+
+  @Bean
+  public ReplayGame replayGame(GameRepository repository, Required required) {
+    return new ReplayGame(repository, required);
   }
 
   @Bean
@@ -41,10 +63,10 @@ public class GameConfig {
         false
       );
 
-    return new PlayGame(required, definition);
+    return new PlayGame(required, definition, gameRepository());
   }
 
-  @Bean
+  //@Bean
   public Provided doubleGame(Required required) {
     GameRulesConfig rules =
       new GameRulesConfig(
@@ -64,10 +86,10 @@ public class GameConfig {
         false
       );
 
-    return new PlayGame(required, definition);
+    return new PlayGame(required, definition, gameRepository());
   }
 
-  @Bean
+  //@Bean
   public Provided exactEndGame(Required required) {
     GameRulesConfig rules =
       new GameRulesConfig(
@@ -87,10 +109,10 @@ public class GameConfig {
         false
       );
 
-    return new PlayGame(required, definition);
+    return new PlayGame(required, definition, gameRepository());
   }
 
-  @Bean
+  //@Bean
   public Provided hitGame(Required required) {
     GameRulesConfig rules =
       new GameRulesConfig(
@@ -110,10 +132,10 @@ public class GameConfig {
         false
       );
 
-    return new PlayGame(required, definition);
+    return new PlayGame(required, definition, gameRepository());
   }
 
-  @Bean
+  //@Bean
   public Provided largeBoardGame(Required required){
   GameRulesConfig rules =
     new GameRulesConfig(
@@ -133,10 +155,10 @@ public class GameConfig {
       false
     );
 
-    return new PlayGame(required, definition);
+    return new PlayGame(required, definition, gameRepository());
   }
 
-  @Bean
+  //@Bean
   public Provided wormholeGame(Required required) {
 
     GameRulesConfig rules =
@@ -162,10 +184,10 @@ public class GameConfig {
         false
       );
 
-    return new PlayGame(required, definition);
+    return new PlayGame(required, definition, gameRepository());
   }
 
-  @Bean
+  //@Bean
   public Provided allVariationsGame(Required required) {
     GameRulesConfig rules =
       new GameRulesConfig(
@@ -185,7 +207,7 @@ public class GameConfig {
         true
       );
 
-    return new PlayGame(required, definition);
+    return new PlayGame(required, definition, gameRepository());
   }
 
 

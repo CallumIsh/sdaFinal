@@ -1,7 +1,7 @@
 package uk.ac.mmu.sdaFinal.infrastructure.configuration;
 
-import uk.ac.mmu.sdaFinal.applicationcode.domainmodel.WormholeGenerator;
-import uk.ac.mmu.sdaFinal.applicationcode.domainmodel.WormholeValidator;
+import uk.ac.mmu.sdaFinal.applicationcode.domainmodel.wormhole.WormholeGenerator;
+import uk.ac.mmu.sdaFinal.applicationcode.domainmodel.wormhole.WormholeValidator;
 import uk.ac.mmu.sdaFinal.applicationcode.domainmodel.board.BasicBoard;
 import uk.ac.mmu.sdaFinal.applicationcode.domainmodel.board.Board;
 import uk.ac.mmu.sdaFinal.applicationcode.domainmodel.board.Wormhole;
@@ -18,6 +18,7 @@ import uk.ac.mmu.sdaFinal.applicationcode.domainmodel.player.ForwardSelector;
 import uk.ac.mmu.sdaFinal.applicationcode.domainmodel.player.Player;
 import uk.ac.mmu.sdaFinal.applicationcode.domainmodel.player.PlayerSelector;
 import uk.ac.mmu.sdaFinal.applicationcode.domainmodel.rules.*;
+import uk.ac.mmu.sdaFinal.applicationcode.usecase.replay.GameIdGenerator;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -108,7 +109,10 @@ public class GameDefinition {
       }
     Board board = new BasicBoard(boardSize, finalWormholes);
 
+    String gameId = new GameIdGenerator().generate();
+
     return new Game(
+      gameId,
       board,
       dice,
       selector,

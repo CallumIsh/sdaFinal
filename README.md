@@ -13,4 +13,5 @@ The next variation that was attempted was the exact end variation, where a playe
 
 The next variation attempted was the hit rule variation, where if a player lands on a square occupied by another player, the turn is void and the player goes back to the square they occupied before the turn started. This was also done using the Strategy Pattern, with a HitRule interface, and ForfeitHitRule and NoHitRule classes implementing it. ForfeitHitRule loops through players in the game and if they share a position, it will return that in HitResult. 
 
-The next variation attempted was the teleport rule, where if players land on a wormhole they are teleported to the other end of it. 
+The next variation attempted was the teleport rule, where if players land on a wormhole they are teleported to the other end of it. There is both a fixed version and random version of wormholes, and they are both validated using the wormhole validator. 
+

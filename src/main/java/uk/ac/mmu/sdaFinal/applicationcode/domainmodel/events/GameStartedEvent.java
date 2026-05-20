@@ -2,7 +2,7 @@ package uk.ac.mmu.sdaFinal.applicationcode.domainmodel.events;
 
 import uk.ac.mmu.sdaFinal.applicationcode.domainmodel.board.Board;
 import uk.ac.mmu.sdaFinal.applicationcode.domainmodel.player.Player;
-import uk.ac.mmu.sdaFinal.infrastructure.configuration.GameRulesConfig;
+import uk.ac.mmu.sdaFinal.applicationcode.domainmodel.rules.GameRulesConfig;
 
 import java.util.List;
 
@@ -11,9 +11,11 @@ public class GameStartedEvent extends GameEvent {
   private final GameRulesConfig rules;
   private final Board board;
   private final List<Player> players;
+  private final String gameId;
 
-  public GameStartedEvent(GameRulesConfig rules, Board board, List<Player> players) {
+  public GameStartedEvent(String gameId, GameRulesConfig rules, Board board, List<Player> players) {
     super(null);
+    this.gameId = gameId;
     this.rules = rules;
     this.board = board;
     this.players = players;
@@ -29,5 +31,9 @@ public class GameStartedEvent extends GameEvent {
 
   public List<Player> getPlayers() {
     return players;
+  }
+
+  public String getGameId() {
+    return gameId;
   }
 }
