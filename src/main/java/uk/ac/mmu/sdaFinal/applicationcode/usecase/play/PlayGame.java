@@ -25,9 +25,12 @@ public class PlayGame implements Provided {
     game.addObserver(new OutputGameObserver(game, repository, true));
 
     game.gameStarted();
+    game.getContext().startGame();
 
     while (!game.hasWinner()) {
       game.playTurn();
     }
+
+    game.getContext().endGame();
   }
 }

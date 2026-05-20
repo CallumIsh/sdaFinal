@@ -3,6 +3,7 @@ package uk.ac.mmu.sdaFinal.infrastructure.driving;
 import uk.ac.mmu.sdaFinal.applicationcode.domainmodel.board.Board;
 import uk.ac.mmu.sdaFinal.applicationcode.domainmodel.dice.DiceRoll;
 import uk.ac.mmu.sdaFinal.applicationcode.domainmodel.events.GameStartedEvent;
+import uk.ac.mmu.sdaFinal.applicationcode.domainmodel.events.GameStateChangedEvent;
 import uk.ac.mmu.sdaFinal.applicationcode.domainmodel.events.PlayerWonEvent;
 import uk.ac.mmu.sdaFinal.applicationcode.domainmodel.events.TurnCompletedEvent;
 import uk.ac.mmu.sdaFinal.applicationcode.domainmodel.game.Game;
@@ -33,7 +34,7 @@ public class OutputGameObserver implements GameObserver {
 
     TurnResult result = event.getResult();
 
-    String player = result.getPlayer().getColour().name();
+    String player = result.getPlayer().getColour().colouredName();
 
     System.out.println(
       player + " turn " +
@@ -41,16 +42,19 @@ public class OutputGameObserver implements GameObserver {
         " rolls " +
         result.getRoll() + "."
     );
+    delay(100);
 
     if (result.isBounced()) {
       System.out.println(player + " overshoots end.");
     }
+    delay(100);
 
     System.out.println(
       player + " moves from position " +
         result.getOldPosition() + " to position " +
         result.getAttemptedPosition() + "."
     );
+    delay(100);
 
     if (result.isHit()) {
 
@@ -60,6 +64,7 @@ public class OutputGameObserver implements GameObserver {
           " at position " +
           result.getAttemptedPosition() + "."
       );
+      delay(100);
 
       System.out.println(
         player + " moves from position " +
@@ -67,11 +72,13 @@ public class OutputGameObserver implements GameObserver {
           " to position " +
           result.getOldPosition() + "."
       );
+      delay(100);
     }
 
     if (result.isTeleported()) {
 
       System.out.println(player + " is teleported.");
+      delay(100);
 
       System.out.println(
         player + " moves from position " +
@@ -79,6 +86,7 @@ public class OutputGameObserver implements GameObserver {
           " to position " +
           result.getTeleportTo() + "."
       );
+      delay(100);
     }
 
   }
@@ -88,11 +96,13 @@ public class OutputGameObserver implements GameObserver {
     String rolls = event.getDiceRolls().stream().map(DiceRoll::toString).collect(Collectors.joining(", "));
 
     System.out.println(
-      event.getPlayer().getColour().name() + " wins in " + event.getTurns() + " turns."
+      event.getPlayer().getColour().colouredName() + " wins in " + event.getTurns() + " turns."
     );
+    delay(500);
 
     System.out.println("Total turns: " + event.getTotalTurns() + ".");
     System.out.println("Dice rolls: {" + rolls + "}");
+    delay(300);
 
     if (saveEnabled) {
 
@@ -105,9 +115,8 @@ public class OutputGameObserver implements GameObserver {
 
       repository.save(gamePlayed);
 
-      System.out.println(repository.findById(gamePlayed.getGameId()).get());
-
       System.out.println("Game Id: " + game.getGameId() + " saved.");
+      delay(500);
     }
   }
 
@@ -137,13 +146,38 @@ public class OutputGameObserver implements GameObserver {
         : "Wormholes are ignored") +
         ", Wormholes: " + wormholes
     );
+    delay(500);
 
     for (Player player : event.getPlayers()) {
       String path = player.getPath().getPositions().stream()
         .map(Position::toString)
         .collect(Collectors.joining(" -> "));
 
-      System.out.println(player.getColour().name() + " path: " + path);
+      System.out.println(player.getColour().colouredName() + " path: " + path);
+    }
+    delay(500);
+  }
+
+  @Override
+  public void onEvent(GameStateChangedEvent event) {
+
+    System.out.println(
+      "Game State: " +
+        event.getOldState() +
+        " -> " +
+        event.getNewState()
+    );
+
+    delay(500);
+
+  }
+
+  private void delay(int milliseconds) {
+    try {
+      Thread.sleep(milliseconds);
+    } catch (InterruptedException e) {
+      Thread.currentThread().interrupt();
     }
   }
+
 }

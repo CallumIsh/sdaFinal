@@ -1,5 +1,6 @@
 package uk.ac.mmu.sdaFinal.infrastructure.configuration;
 
+import uk.ac.mmu.sdaFinal.applicationcode.domainmodel.gamestate.GameContext;
 import uk.ac.mmu.sdaFinal.applicationcode.domainmodel.wormhole.WormholeGenerator;
 import uk.ac.mmu.sdaFinal.applicationcode.domainmodel.wormhole.WormholeValidator;
 import uk.ac.mmu.sdaFinal.applicationcode.domainmodel.board.BasicBoard;
@@ -111,6 +112,8 @@ public class GameDefinition {
 
     String gameId = new GameIdGenerator().generate();
 
+    GameContext context = new GameContext();
+
     return new Game(
       gameId,
       board,
@@ -121,7 +124,8 @@ public class GameDefinition {
       hitRule,
       teleportRule,
       players,
-      config
+      config,
+      context
     );
   }
 }

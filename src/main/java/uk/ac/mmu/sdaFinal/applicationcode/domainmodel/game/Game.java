@@ -1,6 +1,7 @@
 package uk.ac.mmu.sdaFinal.applicationcode.domainmodel.game;
 
 import uk.ac.mmu.sdaFinal.applicationcode.domainmodel.board.Board;
+import uk.ac.mmu.sdaFinal.applicationcode.domainmodel.gamestate.GameContext;
 import uk.ac.mmu.sdaFinal.applicationcode.domainmodel.wormhole.Wormhole;
 import uk.ac.mmu.sdaFinal.applicationcode.domainmodel.dice.DiceRoll;
 import uk.ac.mmu.sdaFinal.applicationcode.domainmodel.dice.DiceShaker;
@@ -38,9 +39,10 @@ public class Game {
   private final List<GameObserver> observers = new ArrayList<>();
   private final List<DiceRoll> diceHistory = new ArrayList<>();
   private Player winner;
+  private final GameContext context;
 
   public Game(String gameId, Board board, DiceShaker dice, PlayerSelector turnSelector, MovementType movementType,
-              WinCondition winCondition, HitRule hitRule, TeleportRule teleportRule, List<Player> players, GameRulesConfig rules) {
+              WinCondition winCondition, HitRule hitRule, TeleportRule teleportRule, List<Player> players, GameRulesConfig rules, GameContext context) {
 
     this.gameId = gameId;
     this.board = board;
@@ -52,9 +54,14 @@ public class Game {
     this.teleportRule = teleportRule;
     this.players = players;
     this.rules = rules;
+    this.context = context;
+
+    this.context.setListener(event -> notifyObservers(o -> o.onEvent(event)));
   }
 
   public TurnResult playTurn() {
+
+    if (!canPlayTurn()) return null;
 
     Player current = turnSelector.next();
 
@@ -70,6 +77,7 @@ public class Game {
     if (result.hasWon()) {
 
       winner = current;
+      context.endGame();
       notifyObservers(observer ->
         observer.onEvent(
           new PlayerWonEvent(
@@ -142,6 +150,10 @@ public class Game {
     return board.getWormholes();
   }
 
+  public GameContext getContext() {
+    return context;
+  }
+
   public boolean hasWinner() {
     return winner != null;
   }
@@ -152,6 +164,10 @@ public class Game {
 
   public void removeObserver(GameObserver observer) {
     observers.remove(observer);
+  }
+
+  private boolean canPlayTurn() {
+    return context.getStatus().equals("IN PLAY");
   }
 
   private void notifyObservers(Consumer<GameObserver> action) {

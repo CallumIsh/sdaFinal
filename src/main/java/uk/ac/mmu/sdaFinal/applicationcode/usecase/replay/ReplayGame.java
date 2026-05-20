@@ -36,10 +36,13 @@ public class ReplayGame {
     game.addObserver(new OutputGameObserver(game, repository, false));
 
     game.gameStarted();
+    game.getContext().startGame();
 
     while (!game.hasWinner()) {
       game.playTurn();
     }
+
+    game.getContext().endGame();
 
   }
 
