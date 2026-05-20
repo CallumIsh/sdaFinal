@@ -13,5 +13,13 @@ The next variation that was attempted was the exact end variation, where a playe
 
 The next variation attempted was the hit rule variation, where if a player lands on a square occupied by another player, the turn is void and the player goes back to the square they occupied before the turn started. This was also done using the Strategy Pattern, with a HitRule interface, and ForfeitHitRule and NoHitRule classes implementing it. ForfeitHitRule loops through players in the game and if they share a position, it will return that in HitResult. 
 
-The next variation attempted was the teleport rule, where if players land on a wormhole they are teleported to the other end of it. There is both a fixed version and random version of wormholes, and they are both validated using the wormhole validator. 
+The next variation attempted was the teleport rule, where if players land on a wormhole they are teleported to the other end of it. There is both a fixed version and random version of wormholes, and they are both validated using the wormhole validator. Wormholes can't spawn on a start or end square for any player, and two wormholes can not share an end point. As well as this, wormholes can not spawn one or both ends outside the board. Wormholes can be added with the teleport rule disabled ,and they are simply ignored, and teleport rule can be turned on but have no wormholes on the board
+
+The last variation attempted was the large board variation, where four players play on a board with 36 squares. This was done using a path class and path factory, where preconfigured paths were used for players. Currently, the size of the board directly links to player count, with two players on a small board and 4 on a large board, but you cant have 4 on a small board or 2 on a large one. 
+
+All variations are displayed using the games currently set up in Beans, with some of these games set up with fixed dice or wormholes, to ensure the variation is properly displayed. 
+
+## Advanced Features
+
+
 
